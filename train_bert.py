@@ -10,7 +10,7 @@ access_token = "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"
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 dataset_name = "wiqa"
-dataset_path = "Data/wiqa/test.jsonl"
+dataset_path = "data/wiqa/test.jsonl"
 
 model_checkpoint = "/data1/yangzhicheng/Data/models/bert-base-uncased"
 model_name = model_checkpoint.split("/")[-1]
@@ -18,9 +18,9 @@ model = AutoModelForMultipleChoice.from_pretrained(model_checkpoint).to(device=d
 tokenizer = AutoTokenizer.from_pretrained(model_checkpoint, do_lower_case=True)
 
 dataset = {}
-dataset["train"] = MultipleChoiceDataset(tokenizer, 'Data/wiqa/train.jsonl')
-dataset["dev"] = MultipleChoiceDataset(tokenizer, 'Data/wiqa/dev.jsonl')
-dataset["test"] = MultipleChoiceDataset(tokenizer, 'Data/wiqa/test.jsonl')
+dataset["train"] = MultipleChoiceDataset(tokenizer, 'data/wiqa/train.jsonl')
+dataset["dev"] = MultipleChoiceDataset(tokenizer, 'data/wiqa/dev.jsonl')
+dataset["test"] = MultipleChoiceDataset(tokenizer, 'data/wiqa/test.jsonl')
 
 args = TrainingArguments(
     f"save/{model_name}-finetuned-{dataset_name}",
