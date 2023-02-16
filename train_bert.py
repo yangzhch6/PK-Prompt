@@ -22,14 +22,18 @@ dataset["train"] = MultipleChoiceDataset(tokenizer, 'data/wiqa/train.jsonl')
 dataset["dev"] = MultipleChoiceDataset(tokenizer, 'data/wiqa/dev.jsonl')
 dataset["test"] = MultipleChoiceDataset(tokenizer, 'data/wiqa/test.jsonl')
 
+learning_rate = 2e-5
+batch_size = 16
+num_epochs = 20
+
 args = TrainingArguments(
-    f"checkpoints/{model_name}-finetuned-{dataset_name}",
+    f"checkpoints/{model_name}-finetuned-{dataset_name}-lr{learning_rate}-bs{batch_size}",
     evaluation_strategy = "epoch",
     save_strategy = "epoch",
-    learning_rate=2e-5,
-    per_device_train_batch_size=16,
-    per_device_eval_batch_size=16,
-    num_train_epochs=20,
+    learning_rate=learning_rate,
+    per_device_train_batch_size=batch_size,
+    per_device_eval_batch_size=batch_size,
+    num_train_epochs=num_epochs,
     weight_decay=0.01,
     load_best_model_at_end=True,
     metric_for_best_model="accuracy"
