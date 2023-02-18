@@ -11,7 +11,7 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 
 dataset_name = "wiqa"
 dataset_path = "data/wiqa/test.jsonl"
-with_para = True
+with_para = False
 
 model_checkpoint = "/home/Yangzhicheng/data/models/bert-base-uncased"
 model_name = model_checkpoint.split("/")[-1]
