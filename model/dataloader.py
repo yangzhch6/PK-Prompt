@@ -19,7 +19,7 @@ num_choice = 3
 answer_label_list = [" The answer is less.", " The answer is more.", " The answer is no effect."]
 label_dict = {"less": 0, "attenuator": 0, "more": 1, "intensifier": 1, "no_effect": 2, "no effect": 2}
 
-def process_data(data_path, is_para=False):
+def process_data(data_path, with_para=False):
     data = pd.read_json(data_path, orient="records", lines=True)
     questions, answer_labels, paragraphs, input_texts = [], [], [], []
 
@@ -30,7 +30,7 @@ def process_data(data_path, is_para=False):
         question = row["question"]["stem"].strip()
         questions.append(question)
         paragraphs.append(para)    
-        if is_para:
+        if with_para:
             input_texts += [para + question + answer_label_list[j] for j in range(num_choice)]
         else:
             input_texts += [question + answer_label_list[j] for j in range(num_choice)]
@@ -49,11 +49,11 @@ def process_data(data_path, is_para=False):
 
 
 class MultipleChoiceDataset(Dataset):
-    def __init__(self, tokenizer, data_path: str, is_para=False) -> None:
+    def __init__(self, tokenizer, data_path: str, with_para=False) -> None:
         super().__init__()
         self.data = pd.read_json(data_path, orient="records", lines=True)
         self.tokenizer = tokenizer
-        self.is_para = is_para
+        self.with_para = with_para
         self.read_qa()
 
     def read_qa(self):
@@ -66,17 +66,13 @@ class MultipleChoiceDataset(Dataset):
             question = row["question"]["stem"].strip()
             self.questions.append(question)
             self.paragraphs.append(para)    
-            if self.is_para:
+            if self.with_para:
                 self.input_texts += [para + question + answer_label_list[j] for j in range(num_choice)]
             else:
                 self.input_texts += [question + answer_label_list[j] for j in range(num_choice)]
 
         encoded_input = self.tokenizer(self.input_texts)
         self.input_ids = encoded_input["input_ids"]
-
-        # flatten token ids
-        # self.input_ids = [{"input_ids": line} for line in input_ids]
-        # return input_ids, answer_labels
 
     def __len__(self) -> int:
         return len(self.answer_labels)

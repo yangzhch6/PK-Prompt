@@ -11,6 +11,7 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 
 dataset_name = "wiqa"
 dataset_path = "data/wiqa/test.jsonl"
+with_para = True
 
 model_checkpoint = "/home/Yangzhicheng/data/models/bert-base-uncased"
 model_name = model_checkpoint.split("/")[-1]
@@ -18,16 +19,16 @@ model = AutoModelForMultipleChoice.from_pretrained(model_checkpoint).to(device=d
 tokenizer = AutoTokenizer.from_pretrained(model_checkpoint, do_lower_case=True)
 
 dataset = {}
-dataset["train"] = MultipleChoiceDataset(tokenizer, 'data/wiqa/train.jsonl')
-dataset["dev"] = MultipleChoiceDataset(tokenizer, 'data/wiqa/dev.jsonl')
-dataset["test"] = MultipleChoiceDataset(tokenizer, 'data/wiqa/test.jsonl')
+dataset["train"] = MultipleChoiceDataset(tokenizer, 'data/wiqa/train.jsonl', with_para=with_para)
+dataset["dev"] = MultipleChoiceDataset(tokenizer, 'data/wiqa/dev.jsonl', with_para=with_para)
+dataset["test"] = MultipleChoiceDataset(tokenizer, 'data/wiqa/test.jsonl', with_para=with_para)
 
 learning_rate = 2e-5
-batch_size = 16
+batch_size = 8
 num_epochs = 20
 
 args = TrainingArguments(
-    f"checkpoints/{model_name}-finetuned-{dataset_name}-lr{learning_rate}-bs{batch_size}",
+    f"checkpoints/{model_name}-finetuned-{dataset_name}-lr{learning_rate}-bs{batch_size}_para{with_para}",
     evaluation_strategy = "epoch",
     save_strategy = "epoch",
     learning_rate=learning_rate,
